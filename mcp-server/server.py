@@ -261,6 +261,36 @@ def get_supplier_history(
     return query(sql, tuple(params))
 
 
+@mcp.tool()
+def check_product_availability(branch_code: str, product_names: list[str]) -> list[dict]:
+    """Check whether specific products are in stock at one branch. Pass the
+    branch code (e.g. "CUB") and exact product names from the catalog (e.g.
+    "Fresh Milk 1L"). Returns on-hand units, days of stock, nearest expiry and
+    a status: OUT_OF_STOCK, LOW (below reorder point or under 3 days of stock)
+    or IN_STOCK. Names that are not in the catalog are omitted."""
+    if not product_names:
+        return []
+    marks = ",".join("?" * len(product_names))
+    rows = query(
+        f"""
+        SELECT pr.name AS product, i.on_hand, i.reorder_point, i.avg_daily_sales,
+               i.nearest_expiry_date
+        FROM inventory i
+        JOIN products pr ON pr.id = i.product_id
+        JOIN branches b ON b.id = i.branch_id
+        WHERE b.code = ? AND pr.name IN ({marks})
+        """,
+        (branch_code, *product_names),
+    )
+    for r in rows:
+        sales = r.pop("avg_daily_sales")
+        reorder = r.pop("reorder_point")
+        r["days_of_stock"] = round(r["on_hand"] / sales, 1) if sales else None
+        low = r["on_hand"] < reorder or (r["days_of_stock"] is not None and r["days_of_stock"] < 3)
+        r["status"] = "OUT_OF_STOCK" if r["on_hand"] <= 0 else "LOW" if low else "IN_STOCK"
+    return rows
+
+
 # --------------------------------------------------------------------------
 # SUPPLIER RELIABILITY tools
 # "Late" = received_at later than expected_at. "Short" = received_quantity <
@@ -530,6 +560,58 @@ def get_supplier_inventory_impact(supplier_id: int | None = None, top_n: int = 1
         "by_product": rollup("product")[:6],
         "worst_rows": sorted(at_risk, key=lambda r: -r["revenue_exposure_php"])[:top_n],
     }
+
+
+@mcp.tool()
+def get_supplier_decisions() -> dict:
+    """Turn the supplier data into a short, prioritised list of decisions for
+    the operations head: (1) reorder now where stock will run out and no PO is
+    open, (2) chase open POs that will arrive too late, (3) escalate or replace
+    the chronically late suppliers. Each decision has a priority, the reason in
+    numbers, and the items involved. Use for "what should we decide next?"."""
+    late = find_chronically_late_suppliers()
+    impact = get_supplier_inventory_impact(top_n=500)
+    rows = impact.get("worst_rows", [])
+    unprotected = [r for r in rows if not r["has_open_po"]]
+    for r in unprotected:
+        inv = query(
+            """SELECT i.reorder_qty, pr.cost_price FROM inventory i
+               JOIN products pr ON pr.id = i.product_id
+               JOIN branches b ON b.id = i.branch_id
+               WHERE b.code = ? AND pr.name = ?""",
+            (r["branch"], r["product"]),
+        )
+        r["order_qty"] = inv[0]["reorder_qty"] if inv else None
+        r["order_cost_php"] = round(inv[0]["reorder_qty"] * inv[0]["cost_price"]) if inv else None
+    unprotected.sort(key=lambda r: (r["status"] != "STOCKED_OUT", -r["revenue_exposure_php"]))
+    chase = [r for r in find_at_risk_open_orders(limit=50) if r["urgency"] == "HIGH"]
+    decisions = []
+    if unprotected:
+        decisions.append({
+            "priority": 1, "action": "Reorder now",
+            "why": f"{len(unprotected)} shelf slots will run out and have no open PO "
+                   f"({sum(r['revenue_exposure_php'] for r in unprotected):,} PHP of sales at risk). "
+                   "Reordering from the late supplier repeats the problem, so use a better supplier where one exists.",
+            "count": len(unprotected), "items": unprotected[:10],
+        })
+    if chase:
+        decisions.append({
+            "priority": 2, "action": "Chase open orders today",
+            "why": f"{len(chase)} open POs from late suppliers will likely arrive after stock runs out.",
+            "items": chase[:10],
+        })
+    for sup in late:
+        card = get_supplier_scorecard(sup["supplier_id"], worst_n=0)
+        cost = estimate_supplier_cost(sup["supplier_id"])
+        short = f" and shipped short on {sup['short_deliveries']} orders" if sup["short_deliveries"] >= 5 else ""
+        decisions.append({
+            "priority": 3, "action": f"Escalate {sup['supplier']}",
+            "why": f"Late on {sup['late_rate_pct']:.0f}% of orders, {sup['avg_days_late']} days on average{short}. "
+                   f"About {cost['missing_value_php']:,.0f} PHP of goods never delivered.",
+            "items": [], "contact": card["supplier"],
+            "alternatives": card["better_alternatives_same_category"],
+        })
+    return {"decisions": decisions, "summary": impact.get("summary", {})}
 
 
 @mcp.tool()

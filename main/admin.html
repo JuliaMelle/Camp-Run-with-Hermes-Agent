@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Suki Mart Admin | Supplier operations</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="admin.css">
+		<script src="admin.js" defer></script>
+	</head>
+	<body>
+		<header class="bar">
+			<a class="brand" href="index.html" aria-label="Back to the store">
+				<span class="brand-mark" aria-hidden="true">s</span>
+				<span>suki<span class="brand-light">mart</span> <span class="role">Admin</span></span>
+			</a>
+			<div class="bar-right">
+				<span id="status" class="status" role="status">Loading…</span>
+				<button id="refresh" type="button">Refresh</button>
+			</div>
+		</header>
+
+		<main class="page">
+			<div id="offline" class="offline" hidden>
+				<strong>Can't reach the Suki data.</strong>
+				Start the bridge, then refresh:
+				<code>uv run mcp-server/web_bridge.py</code>
+			</div>
+
+			<section aria-labelledby="h-decide">
+				<h1 id="h-decide">What to decide next</h1>
+				<p class="lede" id="lede"></p>
+				<div id="decisions" class="decisions"></div>
+			</section>
+
+			<section aria-labelledby="h-nums">
+				<h2 id="h-nums">Where things stand</h2>
+				<div id="tiles" class="tiles"></div>
+			</section>
+
+			<div class="two">
+				<section class="panel" aria-labelledby="h-late">
+					<h2 id="h-late">Average days late by supplier</h2>
+					<p class="hint">Orders received after the promised date, worst first.</p>
+					<div id="late" class="bars"></div>
+				</section>
+				<section class="panel" aria-labelledby="h-branch">
+					<h2 id="h-branch">Sales at risk by branch</h2>
+					<p class="hint">Estimated sales lost while waiting for restock, in PHP.</p>
+					<div id="branch" class="bars"></div>
+				</section>
+			</div>
+
+			<section class="panel" aria-labelledby="h-open">
+				<h2 id="h-open">Open orders from late suppliers</h2>
+				<p class="hint">Sorted by urgency. High means stock runs out before the order is likely to arrive.</p>
+				<div class="tw"><table id="open"></table></div>
+			</section>
+		</main>
+	</body>
+</html>
