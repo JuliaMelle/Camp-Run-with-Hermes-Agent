@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hmac
 import json
 import os
 import shutil
@@ -18,6 +19,8 @@ HERMES_COMMAND = os.environ.get("HERMES_COMMAND", "hermes")
 # Optional overrides so the chat does not depend on the global Hermes default model.
 HERMES_PROVIDER = os.environ.get("HERMES_PROVIDER", "").strip()
 HERMES_MODEL = os.environ.get("HERMES_MODEL", "").strip()
+# Set when the deployed site (Vercel) proxies chat here through a tunnel.
+SUKI_CHAT_SECRET = os.environ.get("SUKI_CHAT_SECRET", "").strip()
 MAX_REQUEST_BYTES = 32_768
 MAX_TURNS = 12
 
@@ -102,7 +105,15 @@ class SukiRequestHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _from_deployed_proxy(self) -> bool:
+        supplied = self.headers.get("X-Suki-Secret", "")
+        return bool(SUKI_CHAT_SECRET) and hmac.compare_digest(supplied, SUKI_CHAT_SECRET)
+
     def _origin_is_local(self) -> bool:
+        if self._from_deployed_proxy():
+            return True
+        if SUKI_CHAT_SECRET and self.headers.get("Cf-Connecting-Ip"):
+            return False  # came through the tunnel without the secret
         origin = self.headers.get("Origin")
         if not origin:
             return True

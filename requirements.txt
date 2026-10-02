@@ -1,0 +1,2 @@
+# Python deps for the Vercel functions in api/ (admin data imports mcp-server/server.py)
+mcp>=1.2,<2

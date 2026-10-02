@@ -1,6 +1,7 @@
 // Admin view: reads live Suki data from the web bridge (mcp-server/web_bridge.py),
 // which calls the same tools Hermes uses over MCP.
-const BRIDGE = 'http://localhost:8766'
+// Local: the web bridge on :8766. Deployed (Vercel): same-origin /api/admin.
+const BRIDGE = ['localhost', '127.0.0.1'].includes(location.hostname) ? 'http://localhost:8766' : ''
 const $ = (selector) => document.querySelector(selector)
 const peso = (amount) => `₱${Math.round(amount).toLocaleString('en-PH')}`
 const esc = (text) => String(text ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))

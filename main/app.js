@@ -186,7 +186,8 @@ async function checkChatStatus() {
     const response = await fetch('/api/status')
     if (!response.ok) throw new Error('Bridge unavailable')
     const status = await response.json()
-    setChatStatus(status.hermes_available ? 'Hermes ready' : 'Hermes CLI not found', status.hermes_available)
+    const offline = status.mode === 'deployed' ? 'Hermes offline' : 'Hermes CLI not found'
+    setChatStatus(status.hermes_available ? 'Hermes ready' : offline, status.hermes_available)
   } catch {
     setChatStatus('Open http://127.0.0.1:8765 to connect local chat')
   }

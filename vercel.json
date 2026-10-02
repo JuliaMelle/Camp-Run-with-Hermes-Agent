@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "main",
+  "cleanUrls": true,
+  "functions": {
+    "api/*.py": {
+      "maxDuration": 300,
+      "includeFiles": "{api/_suki.py,data/store.db,main/chat_server.py,mcp-server/server.py}"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+desktop-plugin/
+docs/
+mcp-server/server(old).py
+mcp-server/web_bridge.py
+.venv/
+__pycache__/
