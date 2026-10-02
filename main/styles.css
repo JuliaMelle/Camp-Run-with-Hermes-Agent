@@ -35,13 +35,13 @@ button { color: inherit; }
 .search kbd { flex: none; padding: 2px 6px; border: 1px solid var(--line); border-radius: 3px; color: #8c9990; font-size: 11px; }
 .header-actions { display: flex; align-items: center; justify-content: flex-end; gap: 24px; }
 .branch-picker { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.pin-icon { color: var(--green); font-size: 23px; line-height: 1; }
+.branch-icon { width: 22px; height: 22px; flex: none; color: var(--green); }
 .branch-copy { display: flex; flex-direction: column; gap: 1px; }
 .branch-copy small { color: var(--ink-soft); font-size: 10px; }
 .branch-copy select { max-width: 145px; padding: 0 16px 0 0; appearance: none; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 12px; font-weight: 700; cursor: pointer; }
 .chevron { margin-left: -21px; color: var(--green); pointer-events: none; }
 .cart-link { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
-.cart-link > span:first-child { color: var(--green); font-size: 22px; }
+.cart-icon { width: 22px; height: 22px; display: block; color: var(--green); }
 .cart-count { min-width: 20px; height: 20px; padding: 0 5px; display: grid; place-items: center; border-radius: 50%; background: var(--lime); color: var(--green-deep); font-size: 10px; font-weight: 700; }
 
 .hero { min-height: 400px; position: relative; overflow: hidden; display: flex; align-items: center; padding: 58px 9.2%; background-color: #344b30; background-image: linear-gradient(90deg, rgba(19, 51, 37, .84) 0%, rgba(19, 51, 37, .62) 40%, rgba(19, 51, 37, .03) 79%), url("https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=2000&q=85"); background-size: cover; background-position: center 52%; color: #fffdf2; animation: hero-appear .7s ease-out both; }
@@ -180,11 +180,9 @@ button { color: inherit; }
   .search { grid-column: 1 / -1; grid-row: 2; margin: 0 0 13px; }
   .header-actions { grid-column: 2; grid-row: 1; gap: 12px; }
   .branch-picker { gap: 4px; }
-  .pin-icon { font-size: 19px; }
   .branch-copy small { font-size: 9px; }
   .branch-copy select { max-width: 105px; font-size: 11px; }
   .cart-link { gap: 4px; }
-  .cart-link-label { display: none; }
   .hero { min-height: 370px; padding: 48px 25px 65px; background-position: 58% center; }
   .hero-content { width: min(380px, 88%); }
   .hero h1 { font-size: 54px; }
