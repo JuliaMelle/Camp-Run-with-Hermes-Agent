@@ -15,6 +15,9 @@ MAIN_DIR = ROOT / "main"
 DB_PATH = ROOT / "data" / "store.db"
 SKILL_PATH = ROOT / "skills" / "suki-team-skill" / "SKILL.md"
 HERMES_COMMAND = os.environ.get("HERMES_COMMAND", "hermes")
+# Optional overrides so the chat does not depend on the global Hermes default model.
+HERMES_PROVIDER = os.environ.get("HERMES_PROVIDER", "").strip()
+HERMES_MODEL = os.environ.get("HERMES_MODEL", "").strip()
 MAX_REQUEST_BYTES = 32_768
 MAX_TURNS = 12
 
@@ -161,9 +164,14 @@ class SukiRequestHandler(SimpleHTTPRequestHandler):
         if not shutil.which(HERMES_COMMAND):
             self._send_json(503, {"error": "Hermes CLI was not found. Set HERMES_COMMAND or add hermes to PATH."})
             return
+        command = [HERMES_COMMAND, "-z", prompt]
+        if HERMES_PROVIDER:
+            command += ["--provider", HERMES_PROVIDER]
+        if HERMES_MODEL:
+            command += ["-m", HERMES_MODEL]
         try:
             result = subprocess.run(
-                [HERMES_COMMAND, "-z", prompt],
+                command,
                 cwd=ROOT,
                 capture_output=True,
                 text=True,
@@ -179,7 +187,10 @@ class SukiRequestHandler(SimpleHTTPRequestHandler):
             self._send_json(503, {"error": "Could not start Hermes. Check its installation and PATH."})
             return
         if result.returncode != 0 or not result.stdout.strip():
-            self._send_json(502, {"error": "Hermes could not complete that request. Check the Hermes terminal for details."})
+            detail = (result.stdout.strip() or result.stderr.strip()).splitlines()
+            reason = detail[0][:300] if detail else "no output"
+            print(f"Hermes exited {result.returncode}: {(result.stderr or result.stdout).strip()[:2000]}")
+            self._send_json(502, {"error": f"Hermes could not complete that request: {reason}"})
             return
         self._send_json(200, {"reply": result.stdout.strip()})
 

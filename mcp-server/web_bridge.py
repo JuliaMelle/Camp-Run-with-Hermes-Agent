@@ -7,7 +7,7 @@ WEB BRIDGE: serves the Suki MCP tools over local HTTP so the storefront in
 main/ (a browser app) can use them. A browser cannot speak MCP over stdio, so
 this calls the same Python tool functions that server.py exposes to Hermes.
 
-    uv run mcp-server/web_bridge.py        # http://localhost:8765
+    uv run mcp-server/web_bridge.py        # http://localhost:8766
 
     GET /api/branches
     GET /api/availability?branch=CUB&names=Fresh%20Milk%201L&names=Tomatoes%20kg
@@ -20,7 +20,7 @@ from urllib.parse import parse_qs, urlparse
 
 import server
 
-PORT = 8765
+PORT = 8766  # 8765 is main/chat_server.py (storefront + Hermes chat)
 
 
 def route(path: str, qs: dict) -> object:
