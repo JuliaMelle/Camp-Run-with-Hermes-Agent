@@ -31,18 +31,7 @@
 					<span class="pin-icon" aria-hidden="true">⌖</span>
 					<span class="branch-copy"><small>Delivering to</small>
 						<select id="branch-select" aria-label="Choose delivery branch">
-							<option>BGC, Taguig</option>
-							<option>Makati</option>
-							<option>Ortigas</option>
-							<option>Kapitolyo</option>
-							<option>Cubao</option>
-							<option>Katipunan</option>
-							<option>Tomas Morato</option>
-							<option>Shaw</option>
-							<option>Alabang</option>
-							<option>BF Parañaque</option>
-							<option>Marikina</option>
-							<option>Ermita</option>
+							<option value="">Loading branches…</option>
 						</select>
 					</span>
 					<span class="chevron" aria-hidden="true">⌄</span>
@@ -85,8 +74,8 @@
 					</div>
 
 					<nav class="category-list" id="category-list" aria-label="Shop by category"></nav>
-					<div class="results-line"><span id="results-count">Fresh picks for you</span><span class="sort-label">LOCAL FAVORITES <span aria-hidden="true">✳</span></span></div>
-					<div class="product-grid" id="product-grid" aria-live="polite"></div>
+					<div class="results-line"><span id="results-count">Loading the Suki Mart catalog…</span><span class="sort-label">LOCAL FAVORITES <span aria-hidden="true">✳</span></span></div>
+					<div class="product-grid" id="product-grid" aria-live="polite" aria-busy="true"></div>
 				</div>
 
 				<aside class="basket" id="your-basket" aria-labelledby="basket-title">
@@ -119,5 +108,37 @@
 		</footer>
 
 		<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+		<div class="chat-widget">
+			<section class="chat-panel" id="chat-panel" aria-labelledby="chat-title" hidden>
+				<header class="chat-header">
+					<div class="chat-agent-mark" aria-hidden="true">s</div>
+					<div class="chat-agent-copy">
+						<h2 id="chat-title">Suki assistant</h2>
+						<span><span class="chat-status-dot" id="chat-status-dot"></span><span id="chat-status">Checking local Hermes…</span></span>
+					</div>
+					<button class="chat-icon-button" id="chat-close" type="button" aria-label="Close chat">×</button>
+				</header>
+				<div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-relevant="additions text">
+					<div class="chat-welcome">
+						<p>Hi, I’m Suki. What can I help you figure out?</p>
+						<div class="chat-suggestions">
+							<button type="button" data-prompt="Give me a supplier reliability report and highlight the biggest risk.">Supplier reliability</button>
+							<button type="button" data-prompt="Which overdue purchase orders should we chase first? Use current stock cover.">Overdue orders</button>
+							<button type="button" data-prompt="Show the shelf impact for the worst supplier, including revenue exposure.">Shelf impact</button>
+						</div>
+					</div>
+				</div>
+				<form class="chat-form" id="chat-form">
+					<label class="visually-hidden" for="chat-input">Message Suki</label>
+					<textarea id="chat-input" rows="1" maxlength="1200" placeholder="Ask about suppliers or store operations…" required></textarea>
+					<button class="chat-send" id="chat-send" type="submit" aria-label="Send message" disabled><span aria-hidden="true">↑</span></button>
+				</form>
+				<p class="chat-footnote">Powered by your local Hermes agent</p>
+			</section>
+			<button class="chat-launcher" id="chat-toggle" type="button" aria-expanded="false" aria-controls="chat-panel">
+				<span class="chat-launcher-icon" aria-hidden="true">◌</span><span>Ask Suki</span><span class="chat-launcher-dot" aria-hidden="true"></span>
+			</button>
+		</div>
 	</body>
 </html>
