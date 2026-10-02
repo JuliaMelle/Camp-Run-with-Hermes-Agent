@@ -73,6 +73,18 @@ th { font-weight: 600; color: var(--ink-soft); }
 .pill.high, .pill.out { background: #fdeee9; color: var(--coral-deep); }
 .pill.normal, .pill.risk { background: var(--paper-dark); color: var(--ink-soft); }
 
+.tools-status { margin: 8px 0 12px; color: var(--ink-soft); font-size: 13px; }
+.tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.tool-card { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 5px; background: var(--paper); }
+.tool-card h3 { margin: 0 0 6px; font-size: 14px; }
+.tool-card h3 code { overflow-wrap: anywhere; }
+.tool-card p { margin: 0 0 10px; color: var(--ink-soft); font-size: 13px; }
+.tool-params { display: flex; flex-wrap: wrap; gap: 6px; }
+.tool-param { display: flex; flex-direction: column; padding: 5px 7px; border-radius: 4px; background: var(--white); }
+.tool-param code, .tool-card h3 code { font-family: ui-monospace, Consolas, monospace; }
+.tool-param small { color: var(--ink-soft); font-size: 10px; }
+.tool-card .no-params { margin: 0; font-style: italic; }
+
 @media (max-width: 520px) {
   h1 { font-size: 26px; }
   .decision { grid-template-columns: 1fr; }

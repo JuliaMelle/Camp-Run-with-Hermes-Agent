@@ -73,6 +73,37 @@ function render(data) {
       `<span class="pill ${r.urgency === 'HIGH' ? 'high' : 'normal'}">${r.urgency}</span>`]))
 }
 
+function renderTools(tools) {
+  $('#tools').innerHTML = tools.map((tool) => {
+    const schema = tool.input_schema || {}
+    const required = new Set(schema.required || [])
+    const params = Object.entries(schema.properties || {}).map(([name, details]) => {
+      const type = details.type || details.anyOf?.map((option) => option.type).filter(Boolean).join(' | ') || 'any'
+      const optional = required.has(name) ? 'required' : 'optional'
+      const defaultValue = Object.prototype.hasOwnProperty.call(details, 'default')
+        ? ` · default ${JSON.stringify(details.default)}` : ''
+      return `<span class="tool-param"><code>${esc(name)}</code><small>${esc(type)} · ${optional}${esc(defaultValue)}</small></span>`
+    }).join('')
+    const summary = String(tool.description || '').split(/\n\s*\n/)[0].replace(/\s+/g, ' ').trim()
+    return `<article class="tool-card">
+      <h3><code>${esc(tool.name)}</code></h3>
+      <p>${esc(summary)}</p>
+      ${params ? `<div class="tool-params" aria-label="Parameters">${params}</div>` : '<p class="no-params">No parameters</p>'}
+    </article>`
+  }).join('')
+  $('#tools-status').textContent = `${tools.length} tools available`
+}
+
+async function loadTools() {
+  try {
+    const response = await fetch(`${BRIDGE}/api/tools`)
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    renderTools(await response.json())
+  } catch (error) {
+    $('#tools-status').textContent = `Unable to load MCP tools: ${error.message}`
+  }
+}
+
 async function load() {
   $('#status').textContent = 'Loading…'
   try {
@@ -87,5 +118,9 @@ async function load() {
   }
 }
 
-$('#refresh').addEventListener('click', load)
+$('#refresh').addEventListener('click', () => {
+  load()
+  loadTools()
+})
 load()
+loadTools()

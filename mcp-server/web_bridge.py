@@ -12,8 +12,10 @@ this calls the same Python tool functions that server.py exposes to Hermes.
     GET /api/branches
     GET /api/availability?branch=CUB&names=Fresh%20Milk%201L&names=Tomatoes%20kg
     GET /api/suppliers/late
-    GET /api/admin                  (everything the admin page shows)
+    GET /api/admin                  (admin dashboard data)
+    GET /api/tools                  (registered MCP tools and their input schemas)
 """
+import asyncio
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
@@ -37,6 +39,15 @@ def route(path: str, qs: dict) -> object:
         }
     if path == "/api/suppliers/late":
         return server.find_chronically_late_suppliers()
+    if path == "/api/tools":
+        return [
+            {
+                "name": tool.name,
+                "description": tool.description or "",
+                "input_schema": tool.inputSchema,
+            }
+            for tool in asyncio.run(server.mcp.list_tools())
+        ]
     return None
 
 
