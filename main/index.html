@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="theme-color" content="#f8f6ee">
+		<meta name="description" content="Fresh finds and everyday favorites from Suki Mart, delivered around Metro Manila.">
+		<title>Suki Mart | Good food, close to home</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="styles.css">
+		<script src="app.js" defer></script>
+	</head>
+	<body>
+		<header class="site-header">
+			<a class="brand" href="#top" aria-label="Suki Mart home">
+				<span class="brand-mark" aria-hidden="true">s</span>
+				<span>suki<span class="brand-light">mart</span></span>
+			</a>
+
+			<form class="search" role="search" id="search-form">
+				<span class="search-icon" aria-hidden="true">⌕</span>
+				<label class="visually-hidden" for="search-input">Search groceries</label>
+				<input id="search-input" type="search" placeholder="Find something fresh..." autocomplete="off">
+				<kbd> / </kbd>
+			</form>
+
+			<div class="header-actions">
+				<label class="branch-picker">
+					<span class="pin-icon" aria-hidden="true">⌖</span>
+					<span class="branch-copy"><small>Delivering to</small>
+						<select id="branch-select" aria-label="Choose delivery branch">
+							<option>BGC, Taguig</option>
+							<option>Makati</option>
+							<option>Ortigas</option>
+							<option>Kapitolyo</option>
+							<option>Cubao</option>
+							<option>Katipunan</option>
+							<option>Tomas Morato</option>
+							<option>Shaw</option>
+							<option>Alabang</option>
+							<option>BF Parañaque</option>
+							<option>Marikina</option>
+							<option>Ermita</option>
+						</select>
+					</span>
+					<span class="chevron" aria-hidden="true">⌄</span>
+				</label>
+				<a class="cart-link" href="#your-basket" aria-label="View your basket">
+					<span aria-hidden="true">▱</span>
+					<span class="cart-link-label">Basket</span>
+					<span class="cart-count" id="cart-count">0</span>
+				</a>
+			</div>
+		</header>
+
+		<main id="top">
+			<section class="hero" aria-labelledby="hero-title">
+				<div class="hero-content">
+					<span class="eyebrow"><span class="eyebrow-dot"></span> YOUR NEIGHBORHOOD MARKET</span>
+					<h1 id="hero-title">Good food.<br><em>Good mood.</em></h1>
+					<p>Everyday favorites and just-picked goodness, brought a little closer to home.</p>
+					<a class="hero-button" href="#market">Shop the market <span aria-hidden="true">↘</span></a>
+				</div>
+				<div class="hero-note"><span>01 / 03</span><span class="note-rule"></span><span>Fresh from our neighborhood</span></div>
+				<div class="hero-stamp" aria-hidden="true"><span>GOOD<br>THINGS<br>GROW<br>HERE</span><span class="stamp-sun">✳</span></div>
+			</section>
+
+			<section class="promise-bar" aria-label="Suki Mart promises">
+				<p><span>✳</span> Picked fresh every morning</p>
+				<p><span>◷</span> At your door in 45–60 min</p>
+				<p><span>♡</span> Good value, always</p>
+				<p class="promise-location"><span class="live-dot"></span> Serving Metro Manila</p>
+			</section>
+
+			<section class="market-layout" id="market">
+				<div class="market-main">
+					<div class="section-heading">
+						<div>
+							<span class="eyebrow section-eyebrow">A LITTLE SOMETHING FOR EVERY DAY</span>
+							<h2>Shop the market<span class="heading-period">.</span></h2>
+						</div>
+						<button class="text-button" type="button" id="clear-filters">See everything <span aria-hidden="true">↗</span></button>
+					</div>
+
+					<nav class="category-list" id="category-list" aria-label="Shop by category"></nav>
+					<div class="results-line"><span id="results-count">Fresh picks for you</span><span class="sort-label">LOCAL FAVORITES <span aria-hidden="true">✳</span></span></div>
+					<div class="product-grid" id="product-grid" aria-live="polite"></div>
+				</div>
+
+				<aside class="basket" id="your-basket" aria-labelledby="basket-title">
+					<div class="basket-heading">
+						<div><span class="eyebrow section-eyebrow">YOUR GOOD PICKS</span><h2 id="basket-title">Your basket<span class="heading-period">.</span></h2></div>
+						<span class="basket-icon" aria-hidden="true">▱</span>
+					</div>
+					<div class="basket-items" id="basket-items"></div>
+					<div class="basket-empty" id="basket-empty">
+						<span class="empty-illustration" aria-hidden="true">⌑</span>
+						<p>Your basket is taking<br>a little breather.</p>
+						<span>Add a few market favorites to get started.</span>
+					</div>
+					<div class="basket-summary" id="basket-summary" hidden>
+						<div><span>Subtotal</span><span id="subtotal">₱0</span></div>
+						<div><span>Delivery</span><span id="delivery-fee">₱49</span></div>
+						<div class="total-row"><strong>Total</strong><strong id="total">₱49</strong></div>
+						<p class="delivery-note"><span aria-hidden="true">✳</span> Free delivery on orders over ₱1,000</p>
+						<button class="checkout-button" type="button" id="checkout-button">Continue to checkout <span aria-hidden="true">→</span></button>
+					</div>
+					<div class="basket-footnote"><span aria-hidden="true">♡</span> A little joy in every delivery.</div>
+				</aside>
+			</section>
+		</main>
+
+		<footer class="site-footer">
+			<a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true">s</span><span>suki<span class="brand-light">mart</span></span></a>
+			<span>From our neighborhood, with care.</span>
+			<span>© 2026 Suki Mart</span>
+		</footer>
+
+		<div class="toast" id="toast" role="status" aria-live="polite"></div>
+	</body>
+</html>
