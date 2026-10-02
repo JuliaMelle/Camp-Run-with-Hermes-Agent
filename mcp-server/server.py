@@ -556,8 +556,8 @@ def get_supplier_inventory_impact(supplier_id: int | None = None, top_n: int = 1
             "total_revenue_exposure_php": sum(r["revenue_exposure_php"] for r in at_risk),
             "total_margin_exposure_php": sum(r["margin_exposure_php"] for r in at_risk),
         },
-        "by_branch": rollup("branch")[:6],
-        "by_product": rollup("product")[:6],
+        "by_branch": rollup("branch"),
+        "by_product": rollup("product"),
         "worst_rows": sorted(at_risk, key=lambda r: -r["revenue_exposure_php"])[:top_n],
     }
 
@@ -670,9 +670,11 @@ def get_overdue_purchase_orders(
     item is comfortably stocked and the chase is not urgent.
 
     DATA QUIRK: the seed data contains stale `partially_received` orders from
-    April 2026 that were never closed out. They are genuinely overdue but are
-    bookkeeping leftovers, not live supply problems. Pass `stale_before`
-    (e.g. "2026-06-01") to exclude them and see only recent, actionable delays.
+    April through June 2026 that were never closed out. They are genuinely
+    overdue but are bookkeeping leftovers, not live supply problems. When
+    `stale_before` is omitted, this tool automatically keeps only POs whose
+    expected date is within the most recent 14 days of the sandbox date. Pass
+    an explicit `stale_before` (YYYY-MM-DD) to override that demo-safe window.
 
     Args:
         supplier: Optional supplier name filter (partial match, case-insensitive).
@@ -714,9 +716,14 @@ def get_overdue_purchase_orders(
     if sid is not None:
         sql += " AND po.supplier_id = ?"
         params.append(sid)
-    if stale_before:
-        sql += " AND po.expected_at >= ?"
-        params.append(stale_before)
+    effective_stale_before = stale_before
+    if effective_stale_before is None:
+        effective_stale_before = query(
+            "SELECT date(?, '-14 days') AS cutoff",
+            (now,),
+        )[0]["cutoff"]
+    sql += " AND po.expected_at >= ?"
+    params.append(effective_stale_before)
     sql += " ORDER BY days_overdue DESC LIMIT ?"
     params.append(limit)
     return query(sql, tuple(params))
