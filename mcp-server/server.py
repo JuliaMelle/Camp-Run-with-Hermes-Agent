@@ -302,6 +302,16 @@ _DELIVERED = "p.received_at IS NOT NULL AND p.status IN ('received','partially_r
 _LATE_DAYS = "(julianday(p.received_at) - julianday(p.expected_at))"
 
 
+@mcp.tool()
+def list_branches(city: str | None = None) -> list[dict]:
+    """List Suki Mart branches with their code, type, city and whether they
+    offer delivery. Optionally filter by city (e.g. "Quezon City")."""
+    sql = "SELECT code, name, branch_type, city, area, has_delivery FROM branches"
+    if city:
+        return query(sql + " WHERE city = ? ORDER BY code", (city,))
+    return query(sql + " ORDER BY code")
+
+
 def _grade(avg_late: float, pct_late: float, fill_rate: float) -> str:
     if avg_late >= 3 or pct_late >= 50 or fill_rate < 90:
         return "D - unreliable"
