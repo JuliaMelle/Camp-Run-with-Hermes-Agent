@@ -99,7 +99,7 @@ button { color: inherit; }
 .basket { position: sticky; top: 20px; padding: 22px 18px 17px; border: 1px solid var(--line); background: var(--white); }
 .basket-heading { display: flex; align-items: center; justify-content: space-between; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
 .basket-heading h2 { font-size: 23px; }
-.basket-icon { color: var(--green); font-size: 26px; }
+.basket-icon { width: 25px; height: 25px; flex: none; color: var(--green); }
 .basket-empty { padding: 25px 0 27px; text-align: center; }
 .empty-illustration { width: 43px; height: 43px; margin: 0 auto 11px; display: grid; place-items: center; border-radius: 50%; background: #f2f3df; color: var(--green); font-size: 25px; }
 .basket-empty p { margin: 0 0 7px; color: var(--ink); font-family: var(--font-display); font-size: 18px; line-height: 1.25; }
