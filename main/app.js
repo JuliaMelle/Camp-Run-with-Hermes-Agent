@@ -188,7 +188,7 @@ async function checkChatStatus() {
     const status = await response.json()
     setChatStatus(status.hermes_available ? 'Hermes ready' : 'Hermes CLI not found', status.hermes_available)
   } catch {
-    setChatStatus('Local Hermes bridge not running')
+    setChatStatus('Open http://127.0.0.1:8765 to connect local chat')
   }
 }
 
@@ -337,7 +337,7 @@ document.addEventListener('keydown', (event) => {
 
 loadCatalog().catch(() => {
   resultsCount.textContent = 'Catalog service unavailable'
-  productGrid.innerHTML = '<p class="no-results">The catalog could not be loaded or contains incomplete data. Start the Suki Mart chat server and check the store database.</p>'
+  productGrid.innerHTML = '<p class="no-results">Run <code>python main/chat_server.py</code>, then open <a href="http://127.0.0.1:8765/">http://127.0.0.1:8765/</a> to load the catalog and connect local chat.</p>'
 }).finally(() => {
   productGrid.setAttribute('aria-busy', 'false')
 })
